@@ -6,7 +6,7 @@ window.onload = function (_event) {
     populateCategorySelect(categories, categorySelect)
     populateDifficultySelect(difficultyLevels, difficultySelect)
 
-    filtersForm.onsubmit = displayHikeCards
+    filtersForm.onsubmit = showFilteredHikeCards  // show filtered hikes on submit
     filtersForm.onreset = showAllHikes  // show all hikes on reset
 
     // Trigger a form submission automatically when the user selects a new option
@@ -16,6 +16,7 @@ window.onload = function (_event) {
     // Go ahead and show all (unfiltered) hikes on page load
     showAllHikes()
 }
+
 
 function showAllHikes () {
     let html = ""
@@ -27,7 +28,8 @@ function showAllHikes () {
     resultsElement.innerHTML = html
 }
 
-function displayHikeCards (event) {
+
+function showFilteredHikeCards (event) {
     event.preventDefault()
     const filtersForm = event.target
 
@@ -61,6 +63,7 @@ function displayHikeCards (event) {
     resultsElement.innerHTML = html
 }
 
+
 function buildHikeCard (hike) {
     const categoryTitleCased = hike.category[0].toUpperCase() + hike.category.slice(1)
 
@@ -92,6 +95,7 @@ function buildHikeCard (hike) {
         </div>
     `
 }
+
 
 function populateCategorySelect (categories, selectElement) {
     let html = ""
