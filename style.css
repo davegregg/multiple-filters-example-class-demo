@@ -1,0 +1,46 @@
+html {
+    box-sizing: border-box;
+}
+
+body {
+    padding-left: 8vw;
+    padding-right: 8vw;
+}
+
+form#filters {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    margin-bottom: 3rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-top: 1px dotted black;
+    border-bottom: 1px dotted black;
+}
+
+#matching-hikes {
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+    flex-wrap: wrap;
+    min-height: 100vh;
+    margin-bottom: 20vh;
+}
+
+#matching-hikes > .card {
+    flex-basis: 45%;
+    min-width: 15rem;
+}
+
+#matching-hikes .card-title {
+    border-bottom: 1px dotted darkgray;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+footer {
+    margin-bottom: 4rem;
+    font-style: italic;
+}
