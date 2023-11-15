@@ -1,58 +1,40 @@
 window.onload = function (_event) {
+    // Go ahead and show all (unfiltered) hikes on page load
+    displayHikes(hikes)
+
     const categorySelect = document.querySelector(`[name="category"]`)
     const difficultySelect = document.querySelector(`[name="difficulty"]`)
     const filtersForm = document.querySelector("#filters")
 
-    populateCategorySelect(categories, categorySelect)
-    populateDifficultySelect(difficultyLevels, difficultySelect)
+    // Populate the select boxes
+    populateSelect(categories, categorySelect)
+    populateSelect(difficultyLevels, difficultySelect)
 
-    filtersForm.onsubmit = showFilteredHikeCards  // show filtered hikes on submit
-    filtersForm.onreset = showAllHikes  // show all hikes on reset
+    // Register our main event listeners
+    filtersForm.onsubmit = displayFilteredHikes  // show filtered hikes on submit
+    filtersForm.onreset = () => displayHikes(hikes)  // show all hikes on reset
 
     // Trigger a form submission automatically when the user selects a new option
     categorySelect.onchange = () => filtersForm.requestSubmit()
     difficultySelect.onchange = () => filtersForm.requestSubmit()
-
-    // Go ahead and show all (unfiltered) hikes on page load
-    showAllHikes()
 }
 
 
-function showAllHikes () {
+function populateSelect (sourceArray, selectElement) {
     let html = ""
-    for (const currentHike of hikes) {
-        html += buildHikeCard(currentHike)
+    
+    for (const item of sourceArray) {
+        html += `<option>${ String(item).toLowerCase() }</option>`
     }
 
-    const resultsElement = document.getElementById("matching-hikes")
-    resultsElement.innerHTML = html
+    selectElement.innerHTML += html
 }
 
 
-function showFilteredHikeCards (event) {
-    event.preventDefault()
-    const filtersForm = event.target
-
-    const chosenCategory = filtersForm.elements.category.value
-    const chosenDifficulty = filtersForm.elements.difficulty.value
-
+function displayHikes (hikesArray) {
     let html = ""
-    for (const currentHike of hikes) {
-        const categoryMatches = currentHike.category === chosenCategory
-        const difficultyMatches = currentHike.difficulty === Number(chosenDifficulty)
-        
-        const difficultyDoesntMatter = chosenDifficulty === "not applicable"
-        const categoryDoesntMatter = chosenCategory === "not applicable"
-        
-        if (categoryMatches && difficultyMatches) {
-            html += buildHikeCard(currentHike)
-        } else if (categoryMatches && difficultyDoesntMatter) {
-            html += buildHikeCard(currentHike)
-        } else if (difficultyMatches && categoryDoesntMatter) {
-            html += buildHikeCard(currentHike)
-        } else if (categoryDoesntMatter && difficultyDoesntMatter) {
-            html += buildHikeCard(currentHike)
-        }
+    for (const currentHike of hikesArray) {
+        html += buildHikeCard(currentHike)
     }
 
     if (html === "") {
@@ -61,6 +43,31 @@ function showFilteredHikeCards (event) {
 
     const resultsElement = document.getElementById("matching-hikes")
     resultsElement.innerHTML = html
+}
+
+
+function displayFilteredHikes (event) {
+    event.preventDefault()
+    const filtersForm = event.target
+
+    const chosenCategory = filtersForm.elements.category.value
+    const chosenDifficulty = filtersForm.elements.difficulty.value
+
+    const ignoreCategory = chosenCategory === "not applicable"
+    const ignoreDifficulty = chosenDifficulty === "not applicable"
+
+    const hikeFilter = (hike) => {
+        const categoryMatches = hike.category === chosenCategory
+        const difficultyMatches = hike.difficulty === Number(chosenDifficulty)
+    
+        return (categoryMatches && difficultyMatches) 
+            || (categoryMatches && ignoreDifficulty)
+            || (difficultyMatches && ignoreCategory)
+            || (ignoreCategory && ignoreDifficulty)
+    }
+
+    const filteredHikes = hikes.filter(hikeFilter)  // Here is the loop now
+    displayHikes(filteredHikes)
 }
 
 
@@ -94,26 +101,4 @@ function buildHikeCard (hike) {
             </div>
         </div>
     `
-}
-
-
-function populateCategorySelect (categories, selectElement) {
-    let html = ""
-    
-    for (const category of categories) {
-        html += `<option value="${category.toLowerCase()}">${category}</option>`
-    }
-
-    selectElement.innerHTML += html
-}
-
-
-function populateDifficultySelect (difficultyLevels, selectElement) {
-    let html = ""
-    
-    for (const difficulty of difficultyLevels) {
-        html += `<option value="${difficulty}">${difficulty}</option>`
-    }
-
-    selectElement.innerHTML += html
 }
